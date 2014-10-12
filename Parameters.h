@@ -32,4 +32,6 @@ const int maxADC_Pass2 = 15;
 
 const int debug = 3;
 
+const float ChargeVsTDC_high=50;
+
 #endif 

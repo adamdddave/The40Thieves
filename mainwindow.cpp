@@ -29,7 +29,7 @@ MainWindow::MainWindow(TH2D* plot_to_hack, QWidget *parent) :
 
     connect( this, SIGNAL(UpdatePlots(TH2D*)), this, SLOT(UpdateViewerSlot(TH2D*)));
     connect( this,SIGNAL(test_signal(int)),this,SLOT(test_slot(int)) );
-    connect( this, SIGNAL(UpdateCluster(TH1F**)), this, SLOT(UpdateClusterSlot(TH1F**)));
+    connect( this, SIGNAL(UpdateCluster(TH1F**,TH2F*)), this, SLOT(UpdateClusterSlot(TH1F**,TH2F*)));
 
 }
 
@@ -41,7 +41,7 @@ MainWindow::~MainWindow()
 void MainWindow::AdamHacksetupColorMap(Ui::MainWindow* ui, TH2D* plot_to_hack){
     QCustomPlot* customPlot = ui->customPlot;//adc vs channel
     QCustomPlot *customPlot2 = ui->customPlot2;//<adc> vs channel
-
+    customPlot2->setNoAntialiasingOnDrag(true);//added response
     QString demoName = "Adam's hack of Color Map Demo";
   if(plot_to_hack == 0){
     //fake some data
@@ -72,6 +72,8 @@ void MainWindow::AdamHacksetupColorMap(Ui::MainWindow* ui, TH2D* plot_to_hack){
 
   QCPColorMap* colorMap = /*RootHelpers::*/RootHelpers::ConvertTH2(plot_to_hack,customPlot->xAxis,customPlot->yAxis);
   customPlot->addPlottable(colorMap);
+  //make it a binned plot as opposed to an interpolated one
+  colorMap->setInterpolate(false);
 
   // add a color scale:
   QCPColorScale *colorScale = new QCPColorScale(customPlot);
@@ -80,8 +82,11 @@ void MainWindow::AdamHacksetupColorMap(Ui::MainWindow* ui, TH2D* plot_to_hack){
   } // add it to the right of the main axis rect
   colorScale->setType(QCPAxis::atRight); // scale shall be vertical bar with tick/axis labels right (actually atRight is already the default)
   colorMap->setColorScale(colorScale); // associate the color map with the color scale
-  colorScale->axis()->setLabel(plot_to_hack->GetTitle());
-
+  /*colorScale->axis()->setLabel(plot_to_hack->GetTitle());
+  colorScale->axis()->setScaleLogBase(100);
+  colorScale->axis()->setNumberFormat("eb");
+  colorScale->axis()->setNumberPrecision(0);
+  colorScale->axis()->setRange(1e-2,1e4);*/
   // set the color gradient of the color map to one of the presets:
   colorMap->setGradient(QCPColorGradient::gpPolar);
 
@@ -89,8 +94,8 @@ void MainWindow::AdamHacksetupColorMap(Ui::MainWindow* ui, TH2D* plot_to_hack){
   // the gradient, see the documentation of QCPColorGradient for what's possible.
   
   // rescale the data dimension (color) such that all data points lie in the span visualized by the color gradient:
-  //colorMap->rescaleDataRange();
-  
+  colorMap->rescaleDataRange();
+  colorScale->rescaleDataRange(true);
   // make sure the axis rect and color scale synchronize their bottom and top margins (so they line up):
   QCPMarginGroup *marginGroup = new QCPMarginGroup(customPlot);
   customPlot->axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroup);
@@ -185,12 +190,16 @@ void MainWindow::on_pushButton_2_clicked()
     ui->customPlot4->removePlottable(0);
     ui->customPlot5->removePlottable(0);
     ui->customPlot6->removePlottable(0);
+    ui->customPlot7->removePlottable(0);
+    ui->customPlot8->removePlottable(0);
     ui->customPlot->replot();
     ui->customPlot2->replot();
     ui->customPlot3->replot();
     ui->customPlot4->replot();
     ui->customPlot5->replot();
     ui->customPlot6->replot();
+    ui->customPlot7->replot();
+    ui->customPlot8->replot();
     delete dum;
 }
 
@@ -206,7 +215,7 @@ void MainWindow::get_pedestals(std::vector<double>& ret){
     return;
 }
 
-void MainWindow::AdamHackClusterPlots(Ui::MainWindow *ui, TH1F** plots){
+void MainWindow::AdamHackClusterPlots(Ui::MainWindow *ui, TH1F** plots,TH2F* plot2){
     //code to hack all the cluster plots from an array of TH1Fs
     //array is
     if(!plots){return;}
@@ -214,12 +223,24 @@ void MainWindow::AdamHackClusterPlots(Ui::MainWindow *ui, TH1F** plots){
     QCustomPlot *clusChargelt10 = ui->customPlot4;//cluster charge, t<10
     QCustomPlot *clusCharge10_20 = ui->customPlot5;//cluster charge, 10<t<20
     QCustomPlot *clusCharge20_30 = ui->customPlot6;//cluster charge, 20<t<30
-
+    QCustomPlot *clusBeamProf = ui->customPlot7;//Beam profile histogram
     QCPBars* ClusterSize=RootHelpers::ConvertTH1(plots[0],clusSize->xAxis,clusSize->yAxis);
 
     QCPBars* chargelt10=RootHelpers::ConvertTH1(plots[1],clusChargelt10->xAxis,clusChargelt10->yAxis);
     QCPBars* charge1020=RootHelpers::ConvertTH1(plots[2],clusCharge10_20->xAxis,clusCharge10_20->yAxis);
     QCPBars* charge2030=RootHelpers::ConvertTH1(plots[3],clusCharge20_30->xAxis,clusCharge20_30->yAxis);
+    QCPBars* profBeam = RootHelpers::ConvertTH1(plots[4],clusBeamProf->xAxis,clusBeamProf->yAxis);
+
+    TProfile* prof_clus=plot2->ProfileX("prof_clus");
+    QCPGraph *graph8 = ui->customPlot8->addGraph();
+
+    RootHelpers::ConvertProfile(prof_clus, *graph8);
+    ui->customPlot8->setInteractions(QCP::iRangeDrag|QCP::iRangeZoom); // this will also allow rescaling the color scale by dragging/zooming
+    ui->customPlot8->axisRect()->setupFullAxesBox();
+    ui->customPlot8->graph()->setScatterStyle(QCPScatterStyle::ssCross);
+
+    graph8->setPen(QPen(QColor(120, 120, 120), 2));
+    ui->customPlot8->rescaleAxes();
 
     clusSize->addPlottable(ClusterSize);
     clusSize->rescaleAxes();
@@ -232,13 +253,17 @@ void MainWindow::AdamHackClusterPlots(Ui::MainWindow *ui, TH1F** plots){
 
     clusCharge20_30->addPlottable(charge2030);
     clusCharge20_30->rescaleAxes();
+
+    clusBeamProf->addPlottable(profBeam);
+    clusBeamProf->rescaleAxes();
+
     return;
 }
 
-void MainWindow::UpdateClusterSlot(TH1F** plots){
+void MainWindow::UpdateClusterSlot(TH1F** plots, TH2F* plot2){
     if(!ui->customPlot3->plottable()){
         //initialize for the first time
-        AdamHackClusterPlots(ui,plots);
+        AdamHackClusterPlots(ui,plots,plot2);
     }
     else{
      //std::vector<QVector<double>> vals = RootHelpers::DataFromTH1(plots[0]);
@@ -266,6 +291,20 @@ void MainWindow::UpdateClusterSlot(TH1F** plots){
      ui->customPlot6->rescaleAxes();
      ui->customPlot6->replot();
 
+     QCPBars* profb = RootHelpers::ConvertTH1(plots[4],ui->customPlot7->xAxis,ui->customPlot7->yAxis);
+     ui->customPlot7->removePlottable(0);
+     ui->customPlot7->addPlottable(profb);
+     ui->customPlot7->rescaleAxes();
+     ui->customPlot7->replot();
+
+     //other profile
+     TProfile * dum2 = (TProfile*)plot2->ProfileX("dum2");
+     std::vector<QVector<double>> vals2 = RootHelpers::DataFromProf(dum2);
+     ui->customPlot8->graph(0)->setData(vals2[0],vals2[2]);
+     ui->customPlot8->rescaleAxes();
+     ui->customPlot8->replot();
+     vals2.clear();
+     delete dum2;
     }
     return;
 }

@@ -9,6 +9,7 @@
 //qcustomplot
 #include "qcustomplot.h"
 
+#include <iostream>
 
 namespace RootHelpers{
 //all the stuff we actually want
@@ -16,12 +17,24 @@ QCPColorMap* ConvertTH2(TH2* plot,QCPAxis *xAxis, QCPAxis *yAxis){
   //this is how we get the 2d histogram in Qt
   QCPColorMap* ret = new QCPColorMap(xAxis,yAxis);
   //get the external info we need from the plot
+  //rebin the plot by 100 bins to see if we get shit correc then.
+  //TH2* dum_rebin = plot->RebinY(100,"dum_rebin");
   int NBinsX = plot->GetNbinsX();
   int NBinsY = plot->GetNbinsY();
   double xmin = plot->GetXaxis()->GetXmin();
   double xmax = plot->GetXaxis()->GetXmax();
   double ymin = plot->GetYaxis()->GetXmin();//terrible method, but this should work
   double ymax = plot->GetYaxis()->GetXmax();//terrible
+
+  /*
+  int NBinsX = dum_rebin->GetNbinsX();
+  int NBinsY = dum_rebin->GetNbinsY();
+  double xmin = dum_rebin->GetXaxis()->GetXmin();
+  double xmax = dum_rebin->GetXaxis()->GetXmax();
+  double ymin = dum_rebin->GetYaxis()->GetXmin();//terrible method, but this should work
+  double ymax = dum_rebin->GetYaxis()->GetXmax();//terrible
+  */
+  //std::cout<<"double checking th2, xmin ="<<xmin<<", xmax = "<<xmax<<", ymin="<<ymin<<", ymax="<<ymax<<std::endl;
   
   ret->data()->setSize(NBinsX,NBinsY);
   ret->data()->setRange(QCPRange(xmin,xmax),QCPRange(ymin,ymax));
@@ -30,13 +43,16 @@ QCPColorMap* ConvertTH2(TH2* plot,QCPAxis *xAxis, QCPAxis *yAxis){
   for (int xIndex=0; xIndex<NBinsX; ++xIndex){
       for (int yIndex=0; yIndex<NBinsY; ++yIndex){
     //ret->data()->cellToCoord(xIndex, yIndex, &x, &y);
-	z = plot->GetBinContent(xIndex+1,yIndex+1);
+    z = plot->GetBinContent(xIndex+1,yIndex+1);
+    //z = dum_rebin->GetBinContent(xIndex+1,yIndex+1);
+    //std::cout<<"for bin ("<<xIndex<<","<<yIndex<<"), z="<<z<<std::endl;
 	ret->data()->setCell(xIndex, yIndex, z);
       }
   }
   //should be done then. One minor detail. Root draws the bins from [low edge,high edge)
   //qcp draws from the bin center, so it's offset.
   //now the rest is just formatting
+  //delete dum_rebin;
   return ret;
   
 }
@@ -73,6 +89,8 @@ std::vector< QVector<double>> DataFromProf(TProfile* prof){
       yvals.push_back(prof->GetBinContent(i+1));
       xerrs.push_back(prof->GetBinWidth(i+1)/2.);
       yerrs.push_back(prof->GetBinError(i+1));
+      //if(((TString)prof->GetName()).Contains("dum2"))
+      //std::cout<<"adding values (x,y)=("<<prof->GetBinCenter(i+1)<<","<<prof->GetBinContent(i+1)<<")"<<std::endl;
     }
     ret.push_back(xvals);
     ret.push_back(xerrs);

@@ -33,6 +33,8 @@ int ExtraGuiQtLib::start_of_run(int runtype, int nevents, int sample_size){
     ClusterChargelt10->Reset();
     ClusterCharge10_20->Reset();
     ClusterCharge20_30->Reset();
+    ClusterBeamProf->Reset();
+    ClusterChargeVsTDC->Reset();
     cout<<"Start of run"<<endl;
     cout<<"Initializing Histograms"<<endl;
     //reset the plots automatically
@@ -55,14 +57,17 @@ void ExtraGuiQtLib::end_of_run(string &rc){
     UpdatePlots();
     ok_to_do_clustering=false;//reset the clustering flag.
     //save shit if you want...
-/*
+
     TCanvas * cc = new TCanvas();
     HistoToFill->Draw("colz");
     cc->SaveAs("~/Documents/ExtraGuiQtLib/temp2d.png");
     cc->Clear();
     HistoToDisplay->Draw();
     cc->SaveAs("~/Documents/ExtraGuiQtLib/temp.png");
-    delete cc;*/
+    cc->Clear();
+    ClusterChargeVsTDC->Draw("colz");
+    cc->SaveAs("~/Documents/ExtraGuiQtLib/temp3.png");
+    delete cc;
     std::cout<<"finishing run"<<std::endl;
 
 }
@@ -89,14 +94,14 @@ int ExtraGuiQtLib::filter_event(const AlibavaData *data, string &S){
     if(data->firmware()==3){time2comp=data->time();}
     else{time2comp = decode_datablock_time(data->time());}//decode the time into ns
     //std::cout<<"time2comp="<<time2comp<<std::endl;
-      for(int j_chip=0; j_chip<2;++j_chip){
+    for(int j_chip=0; j_chip<2;++j_chip){
         for(int i_channel=0; i_channel<128;++i_channel){
-          if(data->get_block()->chip[j_chip].signal[i_channel]<min_adc)continue;
-          if(time2comp<time_min || time2comp>time_max)continue;
-          HistoToFill->Fill(128*j_chip+i_channel,data->get_block()->chip[j_chip].signal[i_channel]);
-          adcs_local[128*j_chip+i_channel]=data->get_block()->chip[j_chip].signal[i_channel];
+            if(data->get_block()->chip[j_chip].signal[i_channel]<min_adc)continue;
+            if(time2comp<time_min || time2comp>time_max)continue;
+            HistoToFill->Fill(128*j_chip+i_channel,data->get_block()->chip[j_chip].signal[i_channel]);
+            adcs_local[128*j_chip+i_channel]=data->get_block()->chip[j_chip].signal[i_channel];
         }
-      }
+    }
 
     if(ok_to_do_clustering){
         //int elem=(int)(*std::max_element(adcs_local.begin(),adcs_local.end()));
@@ -117,6 +122,9 @@ int ExtraGuiQtLib::filter_event(const AlibavaData *data, string &S){
                     if(time2comp<10)ClusterChargelt10->Fill(a.get_cluster_charge(nclus));
                     if(time2comp>=10 && time2comp<20)ClusterCharge10_20->Fill(a.get_cluster_charge(nclus));
                     if(time2comp>=20 && time2comp<30)ClusterCharge20_30->Fill(a.get_cluster_charge(nclus));
+                    ClusterBeamProf->Fill(a.get_cluster_pos(nclus));
+                    ClusterChargeVsTDC->Fill(time2comp,a.get_cluster_charge(nclus));
+                    //std::cout<<"Filling ClusterChargeVsTDC with("<<time2comp<<","<<a.get_cluster_charge(nclus)<<")"<<std::endl;
                 }
 
             }
@@ -172,7 +180,9 @@ void ExtraGuiQtLib::UpdatePlots(){
         ClusterHistos[1]=ClusterChargelt10;
         ClusterHistos[2]=ClusterCharge10_20;
         ClusterHistos[3]=ClusterCharge20_30;
-        win->UpdateCluster(ClusterHistos);
+        ClusterHistos[4]=ClusterBeamProf;
+        //ClusterHistos[5]=ClusterChargeVsTDC;// TH2, not TH1
+        win->UpdateCluster(ClusterHistos,ClusterChargeVsTDC);
     }
 }
 double ExtraGuiQtLib::decode_datablock_time(unsigned int time){

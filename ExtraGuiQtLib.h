@@ -20,6 +20,8 @@
 //Qt
 #include <QApplication>
 #include "mainwindow.h"
+//params
+#include "Parameters.h"
 using namespace std;
 //MainWindow* win;
 class EXTRAGUIQTLIBSHARED_EXPORT ExtraGuiQtLib : public Plugin
@@ -36,11 +38,13 @@ private:
     double min_adc;
     TH2D* HistoToFill;//ADC vs channel
     TProfile* HistoToDisplay;//<adc> vs channel
-    TH1F* ClusterHistos[4];//4 cluster monitoring plots, which follow
+    TH1F* ClusterHistos[6];//5 cluster monitoring plots, which follow
     TH1F* ClusterSize;
     TH1F* ClusterChargelt10;
     TH1F* ClusterCharge10_20;
     TH1F* ClusterCharge20_30;
+    TH1F* ClusterBeamProf;
+    TH2F* ClusterChargeVsTDC;
     bool ok_to_do_clustering;
     QApplication *a;
     MainWindow  *win;
@@ -71,6 +75,8 @@ public:
         ClusterChargelt10 = new TH1F("ClusterChargelt10","Cluster Charge,t<10",200,0,200);
         ClusterCharge10_20=new TH1F("ClusterCharge10_20","Cluster Charge, 10<t<20",200,0,200);
         ClusterCharge20_30=new TH1F("ClusterCharge20_30","Cluster Charge, 20<t<30",200,0,200);
+        ClusterBeamProf = new TH1F("ClusterBeamProf","Cluster Beam Profile",256,0,256);
+        ClusterChargeVsTDC = new TH2F("ClusterChargeVsTDC","Cluster Charge vs TDC",200,0,200,100,min_adc,ChargeVsTDC_high);//defined in parameters
         local_pedestals.reserve(256);
     }
 
@@ -83,6 +89,8 @@ public:
       delete ClusterChargelt10;
       delete ClusterCharge10_20;
       delete ClusterCharge20_30;
+      delete ClusterBeamProf;
+      delete ClusterChargeVsTDC;
       delete win;
       delete a;
 

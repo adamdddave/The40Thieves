@@ -28,11 +28,14 @@
     </property>
    </widget>
    <widget class="QTabWidget" name="tabWidget">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>10</x>
       <y>10</y>
-      <width>561</width>
+      <width>631</width>
       <height>461</height>
      </rect>
     </property>
@@ -55,6 +58,9 @@
      </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <attribute name="title">
       <string>ADC vs Channel</string>
      </attribute>
@@ -157,6 +163,49 @@
       </property>
       <property name="text">
        <string>Cluster ADC Counts in time bins [ns]</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_8">
+     <attribute name="title">
+      <string>Beam Prof.</string>
+     </attribute>
+     <widget class="QCustomPlot" name="customPlot7" native="true">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>20</y>
+        <width>501</width>
+        <height>381</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>410</y>
+        <width>101</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Beetle Channel</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_9">
+     <attribute name="title">
+      <string>&lt;Cluster ADC&gt; vs TDC</string>
+     </attribute>
+     <widget class="QCustomPlot" name="customPlot8" native="true">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>20</y>
+        <width>491</width>
+        <height>371</height>
+       </rect>
       </property>
      </widget>
     </widget>

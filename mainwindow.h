@@ -24,14 +24,14 @@ public:
     TH2D *Fake2dHisto(TFormula *eq); 
     //void UpdateViewer(TH2D* PlotToUpdate);
     void ClearForNewRun();
-    void AdamHackClusterPlots(Ui::MainWindow* ui,TH1F** plots=0);
+    void AdamHackClusterPlots(Ui::MainWindow* ui,TH1F** plots=0,TH2F* plot2=0);
     void get_pedestals(std::vector<double>& ret);
 private slots:
     void on_pushButton_clicked();
     void test_slot(int i);
     void UpdateViewerSlot(TH2D* plot);
     void on_pushButton_2_clicked();
-    void UpdateClusterSlot(TH1F** plots);
+    void UpdateClusterSlot(TH1F** plots, TH2F* plot2);
 
 private:
     Ui::MainWindow *ui;
@@ -39,7 +39,7 @@ private:
 signals:
     void test_signal(int i);
     void UpdatePlots(TH2D* plot);
-    void UpdateCluster(TH1F** clusterPlots);
+    void UpdateCluster(TH1F** clusterPlots, TH2F* clusADC);
 };
 
 #endif // MAINWINDOW_H
