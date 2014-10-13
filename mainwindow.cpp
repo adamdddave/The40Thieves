@@ -24,12 +24,13 @@ MainWindow::MainWindow(TH2D* plot_to_hack, QWidget *parent) :
     else{
         AdamHacksetupColorMap(ui);
     }
-
+    setQCPlabels();
     //connect(&dataTimer,SIGNAL(timeout()), this, SLOT(UpdateViewerSlot(TH2D*)));
 
     connect( this, SIGNAL(UpdatePlots(TH2D*)), this, SLOT(UpdateViewerSlot(TH2D*)));
     connect( this,SIGNAL(test_signal(int)),this,SLOT(test_slot(int)) );
     connect( this, SIGNAL(UpdateCluster(TH1F**,TH2F*)), this, SLOT(UpdateClusterSlot(TH1F**,TH2F*)));
+
 
 }
 
@@ -65,8 +66,7 @@ void MainWindow::AdamHacksetupColorMap(Ui::MainWindow* ui, TH2D* plot_to_hack){
   //this is for the th2
   customPlot->setInteractions(QCP::iRangeDrag|QCP::iRangeZoom); // this will also allow rescaling the color scale by dragging/zooming
   customPlot->axisRect()->setupFullAxesBox(true);
-  customPlot->xAxis->setLabel(plot_to_hack->GetXaxis()->GetTitle());
-  customPlot->yAxis->setLabel(plot_to_hack->GetYaxis()->GetTitle());
+
   // set up the QCPColorMap:
   //let's try the root helpers
 
@@ -307,4 +307,35 @@ void MainWindow::UpdateClusterSlot(TH1F** plots, TH2F* plot2){
      delete dum2;
     }
     return;
+}
+
+void MainWindow::setQCPlabels(){
+    //this is to set all the labels
+    //2d plot
+    ui->customPlot->xAxis->setLabel("Channel");
+    ui->customPlot->yAxis->setLabel("ADC Counts");
+    //mean adc vs channel
+    ui->customPlot2->xAxis->setLabel("Channel");
+    ui->customPlot2->yAxis->setLabel("<ADC>");
+    //cluster plots
+    //cluster size
+    ui->customPlot3->xAxis->setLabel("Cluster Size");
+    ui->customPlot3->yAxis->setLabel("Entries");
+    //cluster charge
+    ui->customPlot4->xAxis->setLabel("Cluster Charge");
+    ui->customPlot4->yAxis->setLabel("Entries");
+
+    ui->customPlot5->xAxis->setLabel("Cluster Charge");
+    ui->customPlot5->yAxis->setLabel("Entries");
+
+    ui->customPlot6->xAxis->setLabel("Cluster Charge");
+    ui->customPlot6->yAxis->setLabel("Entries");
+
+    //beam profile
+    ui->customPlot7->xAxis->setLabel("Channel");
+    ui->customPlot7->yAxis->setLabel("Cluster Count");
+
+    //<cluster adc> vs tdc
+    ui->customPlot8->xAxis->setLabel("TDC Time[ns]");
+    ui->customPlot8->yAxis->setLabel("<Cluster Charge>");
 }

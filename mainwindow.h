@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QtWidgets>
 #include <QTimer>
+#include <QtGui>
 #include "qcustomplot.h"
 #include <TH2.h>
 #include <TFormula.h>
@@ -36,6 +37,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     std::vector<double>local_peds;
+    void setQCPlabels();
 signals:
     void test_signal(int i);
     void UpdatePlots(TH2D* plot);

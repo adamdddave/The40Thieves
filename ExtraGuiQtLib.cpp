@@ -57,7 +57,7 @@ void ExtraGuiQtLib::end_of_run(string &rc){
     UpdatePlots();
     ok_to_do_clustering=false;//reset the clustering flag.
     //save shit if you want...
-
+    /*
     TCanvas * cc = new TCanvas();
     HistoToFill->Draw("colz");
     cc->SaveAs("~/Documents/ExtraGuiQtLib/temp2d.png");
@@ -67,7 +67,7 @@ void ExtraGuiQtLib::end_of_run(string &rc){
     cc->Clear();
     ClusterChargeVsTDC->Draw("colz");
     cc->SaveAs("~/Documents/ExtraGuiQtLib/temp3.png");
-    delete cc;
+    delete cc;*/
     std::cout<<"finishing run"<<std::endl;
 
 }

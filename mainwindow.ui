@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>654</width>
+    <width>594</width>
     <height>571</height>
    </rect>
   </property>
@@ -35,7 +35,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>631</width>
+      <width>581</width>
       <height>461</height>
      </rect>
     </property>
@@ -51,26 +51,8 @@
        <rect>
         <x>30</x>
         <y>20</y>
-        <width>451</width>
+        <width>511</width>
         <height>381</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tab_2">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <attribute name="title">
-      <string>ADC vs Channel</string>
-     </attribute>
-     <widget class="QCustomPlot" name="customPlot" native="true">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>20</y>
-        <width>491</width>
-        <height>378</height>
        </rect>
       </property>
      </widget>
@@ -84,8 +66,8 @@
        <rect>
         <x>30</x>
         <y>20</y>
-        <width>501</width>
-        <height>321</height>
+        <width>521</width>
+        <height>391</height>
        </rect>
       </property>
      </widget>
@@ -97,10 +79,10 @@
      <widget class="QTabWidget" name="tabWidget_2">
       <property name="geometry">
        <rect>
-        <x>60</x>
-        <y>60</y>
-        <width>451</width>
-        <height>341</height>
+        <x>20</x>
+        <y>40</y>
+        <width>541</width>
+        <height>361</height>
        </rect>
       </property>
       <property name="currentIndex">
@@ -115,8 +97,8 @@
          <rect>
           <x>30</x>
           <y>20</y>
-          <width>391</width>
-          <height>271</height>
+          <width>481</width>
+          <height>291</height>
          </rect>
         </property>
        </widget>
@@ -130,8 +112,8 @@
          <rect>
           <x>30</x>
           <y>20</y>
-          <width>391</width>
-          <height>271</height>
+          <width>481</width>
+          <height>291</height>
          </rect>
         </property>
        </widget>
@@ -145,8 +127,8 @@
          <rect>
           <x>30</x>
           <y>20</y>
-          <width>391</width>
-          <height>271</height>
+          <width>481</width>
+          <height>291</height>
          </rect>
         </property>
        </widget>
@@ -175,22 +157,9 @@
        <rect>
         <x>20</x>
         <y>20</y>
-        <width>501</width>
-        <height>381</height>
+        <width>531</width>
+        <height>391</height>
        </rect>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_2">
-      <property name="geometry">
-       <rect>
-        <x>220</x>
-        <y>410</y>
-        <width>101</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Beetle Channel</string>
       </property>
      </widget>
     </widget>
@@ -203,8 +172,26 @@
        <rect>
         <x>50</x>
         <y>20</y>
-        <width>491</width>
+        <width>501</width>
         <height>371</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <attribute name="title">
+      <string>ADC vs Channel</string>
+     </attribute>
+     <widget class="QCustomPlot" name="customPlot" native="true">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>20</y>
+        <width>521</width>
+        <height>378</height>
        </rect>
       </property>
      </widget>
@@ -229,7 +216,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>654</width>
+     <width>594</width>
      <height>19</height>
     </rect>
    </property>

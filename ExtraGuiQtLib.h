@@ -76,7 +76,7 @@ public:
         ClusterCharge10_20=new TH1F("ClusterCharge10_20","Cluster Charge, 10<t<20",200,0,200);
         ClusterCharge20_30=new TH1F("ClusterCharge20_30","Cluster Charge, 20<t<30",200,0,200);
         ClusterBeamProf = new TH1F("ClusterBeamProf","Cluster Beam Profile",256,0,256);
-        ClusterChargeVsTDC = new TH2F("ClusterChargeVsTDC","Cluster Charge vs TDC",200,0,200,100,min_adc,ChargeVsTDC_high);//defined in parameters
+        ClusterChargeVsTDC = new TH2F("ClusterChargeVsTDC","Cluster Charge vs TDC",200,0,50,100,min_adc,250);//defined in parameters
         local_pedestals.reserve(256);
     }
 
